@@ -1,0 +1,390 @@
+<!DOCTYPE html>
+<html lang="ms">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Biro Agama KESUKES Kemaman - Cari Kata Islamik</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Arial, sans-serif; }
+    body { text-align: center; background: #064e3b; color: white; display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 100vh; padding: 15px; background-image: radial-gradient(#047857 1px, transparent 1px); background-size: 20px 20px; }
+    
+    .header-container { display: flex; flex-direction: column; align-items: center; margin-bottom: 10px; }
+    .logo-kesukes { width: 80px; height: auto; margin-bottom: 6px; filter: drop-shadow(0 4px 6px rgba(0,0,0,0.3)); }
+    h1 { font-size: 20px; color: #facc15; text-shadow: 0 0 10px rgba(250, 204, 21, 0.4); margin-bottom: 4px; font-weight: bold; }
+    p.sub { font-size: 12px; color: #a7f3d0; margin-bottom: 6px; max-width: 320px; line-height: 1.3; }
+    .date-banner { background: #022c22; color: #facc15; border: 1px solid #facc15; font-size: 11px; padding: 4px 12px; border-radius: 20px; margin-bottom: 10px; font-weight: bold; }
+
+    /* DASHBOARD */
+    .dashboard { display: flex; justify-content: space-around; width: 320px; background: #022c22; padding: 8px; border-radius: 10px; border: 1px solid #facc15; margin-bottom: 10px; box-shadow: 0 4px 10px rgba(0,0,0,0.3); }
+    .dash-box { font-size: 13px; font-weight: bold; color: #ecfdf5; }
+    .dash-box span { font-size: 16px; color: #facc15; }
+
+    /* SENARAI PERKATAAN */
+    .word-list { display: flex; flex-wrap: wrap; justify-content: center; gap: 6px; width: 320px; margin-bottom: 10px; background: #022c22; padding: 8px; border-radius: 8px; border: 1px solid #047857; }
+    .word-item { font-size: 11px; padding: 3px 8px; background: #064e3b; border-radius: 12px; color: #a7f3d0; border: 1px solid #047857; font-weight: bold; }
+    .word-item.found { background: #10b981; color: #022c22; text-decoration: line-through; border-color: #facc15; }
+
+    /* GRID WORD SEARCH (10x10) */
+    .grid-container { display: grid; grid-template-columns: repeat(10, 1fr); gap: 3px; width: 320px; height: 320px; background: #022c22; padding: 6px; border-radius: 12px; border: 3px solid #facc15; box-shadow: 0 10px 25px rgba(0,0,0,0.5); touch-action: none; user-select: none; }
+    .cell { background: #065f46; color: #ffffff; border-radius: 4px; display: flex; align-items: center; justify-content: center; font-size: 15px; font-weight: bold; cursor: pointer; border: 1px solid #047857; transition: 0.1s; }
+    .cell.selected { background: #facc15; color: #022c22; }
+    .cell.found { background: #10b981; color: #022c22; border-color: #facc15; }
+
+    /* BUTANG */
+    .btn-start { width: 320px; padding: 12px; background: linear-gradient(135deg, #eab308, #ca8a04); color: #022c22; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; font-size: 15px; margin-top: 8px; box-shadow: 0 4px 10px rgba(234, 179, 8, 0.4); text-transform: uppercase; }
+    .btn-view-all { width: 320px; padding: 10px; background: #022c22; color: #facc15; border: 1px solid #facc15; border-radius: 8px; font-weight: bold; cursor: pointer; font-size: 13px; margin-top: 8px; }
+
+    /* BORANG */
+    .form-container { margin-top: 12px; background: #022c22; padding: 16px; border-radius: 12px; border: 1px solid #facc15; width: 320px; text-align: left; box-shadow: 0 8px 16px rgba(0,0,0,0.4); }
+    label { font-size: 11px; color: #a7f3d0; margin-top: 5px; display: block; }
+    input, select { width: 100%; padding: 8px; margin: 3px 0 6px 0; border-radius: 6px; border: 1px solid #047857; background: #064e3b; color: white; font-size: 12px; }
+    button.btn-submit { width: 100%; padding: 10px; background: #10b981; color: #022c22; border: none; border-radius: 6px; font-weight: bold; cursor: pointer; font-size: 13px; margin-top: 5px; }
+
+    /* MODAL */
+    .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(2, 44, 34, 0.9); backdrop-filter: blur(5px); z-index: 999; justify-content: center; align-items: center; padding: 15px; }
+    .modal-content { background: #064e3b; border: 2px solid #facc15; border-radius: 16px; padding: 18px; width: 100%; max-width: 420px; display: flex; flex-direction: column; }
+    .modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; border-bottom: 1px solid #047857; padding-bottom: 6px; }
+    .close-btn { background: none; border: none; color: #a7f3d0; font-size: 20px; cursor: pointer; }
+
+    .podium-container { display: flex; justify-content: center; align-items: flex-end; gap: 8px; margin-bottom: 12px; height: 160px; }
+    .podium { display: flex; flex-direction: column; align-items: center; justify-content: space-between; border-radius: 8px 8px 0 0; padding: 6px 2px; width: 32%; color: #022c22; font-weight: bold; font-size: 10px; }
+    .podium .score { font-size: 11px; font-weight: 800; background: rgba(255,255,255,0.4); padding: 2px 4px; border-radius: 8px; }
+    .podium .name { font-size: 10px; text-align: center; font-weight: 800; word-break: break-word; }
+
+    .rank-1 { height: 150px; background: linear-gradient(135deg, #ffe066, #f59e0b); border: 2px solid #fbbf24; order: 2; }
+    .rank-2 { height: 125px; background: linear-gradient(135deg, #e2e8f0, #94a3b8); border: 2px solid #cbd5e0; order: 1; }
+    .rank-3 { height: 105px; background: linear-gradient(135deg, #fdba74, #b45309); border: 2px solid #f97316; order: 3; color: white; }
+    .rank-3 .name { color: white; }
+
+    .rank-list { text-align: left; background: #022c22; border-radius: 8px; padding: 6px; max-height: 150px; overflow-y: auto; border: 1px solid #047857; }
+    .rank-item { display: flex; justify-content: space-between; align-items: center; padding: 6px 8px; border-bottom: 1px solid #064e3b; font-size: 11px; }
+  </style>
+</head>
+<body>
+
+  <div class="header-container">
+    <img src="https://i.postimg.cc/QtPnsW43/svg.png" alt="Logo KESUKES" class="logo-kesukes">
+    <h1>🔍 Cari Kata Islamik KESUKES</h1>
+    <p class="sub"><b>Biro Agama KESUKES Cawangan Kemaman</b><br>Cari 8 perkataan Sifat Mahmudah terpantas!</p>
+    <div class="date-banner" id="dateBanner">📅 Cabaran Ke-2 Berlangsung</div>
+  </div>
+
+  <div class="dashboard">
+    <div class="dash-box">Masa: <span id="timer">0</span>s</div>
+    <div class="dash-box">Dijumpai: <span id="foundCount">0</span>/8</div>
+  </div>
+
+  <div class="word-list" id="wordList"></div>
+  <div class="grid-container" id="grid"></div>
+
+  <button class="btn-start" id="startBtn" onclick="mulaGame()">MULA GAME ▶️</button>
+  <button class="btn-view-all" onclick="openModal()">📜 Carta Top 5 Pemain</button>
+
+  <!-- BORANG -->
+  <div class="form-container" id="scoreForm" style="display: none;">
+    <h3 style="text-align: center; color: #facc15;">ALHAMDULILLAH, JUMPA SEMUA!</h3>
+    <p style="text-align: center; font-size: 13px; margin-bottom: 8px;">Markah Skor: <b id="finalScore" style="font-size: 18px; color: #34d399;">0</b> pts</p>
+    
+    <label>Nama Penuh Anggota:</label>
+    <input type="text" id="nama" placeholder="Ahmad Zaki Bin Ali" required>
+
+    <label>No. Kad Pengenalan (Penuh):</label>
+    <input type="text" id="ic" placeholder="880101115233" maxlength="12" required>
+    
+    <label>No. WhatsApp:</label>
+    <input type="tel" id="noTel" placeholder="0139876543" required>
+
+    <label>Alamat E-mel:</label>
+    <input type="email" id="email" placeholder="ahmed@moh.gov.my" required>
+    
+    <label>Fasiliti Bertugas:</label>
+    <select id="fasiliti" required>
+      <option value="">-- Pilih Fasiliti --</option>
+      <option value="Hospital Kemaman">Hospital Kemaman</option>
+      <option value="Pejabat Kesihatan Daerah Kemaman">PKD Kemaman</option>
+      <option value="Pejabat Pergigian Kemaman">Pejabat Pergigian Kemaman</option>
+    </select>
+
+    <label>Unit / Wad Bertugas:</label>
+    <input type="text" id="unit" placeholder="Wad 2 / Kecemasan" required>
+
+    <label>Jawatan:</label>
+    <input type="text" id="jawatan" placeholder="PPP / Jururawat / Doktor" required>
+
+    <button class="btn-submit" onclick="hantarSkor()">Hantar Skor Pertandingan 🏆</button>
+    <p id="statusMsg" style="margin-top: 6px; font-size: 11px; text-align: center; font-weight: bold;"></p>
+  </div>
+
+  <!-- MODAL CARTA TOP 5 -->
+  <div class="modal-overlay" id="leaderboardModal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3 style="color:#facc15; font-size:15px;">🏆 Carta Top 5 Anggota</h3>
+        <button class="close-btn" onclick="closeModal()">✕</button>
+      </div>
+
+      <div class="podium-container">
+        <div class="podium rank-2">
+          <span>🥈 PERAK</span>
+          <div class="name" id="p2-name">-</div>
+          <div class="score" id="p2-score">0 pts</div>
+        </div>
+        <div class="podium rank-1">
+          <span>👑 EMAS</span>
+          <div class="name" id="p1-name">-</div>
+          <div class="score" id="p1-score">0 pts</div>
+        </div>
+        <div class="podium rank-3">
+          <span>🥉 GANGSA</span>
+          <div class="name" id="p3-name">-</div>
+          <div class="score" id="p3-score">0 pts</div>
+        </div>
+      </div>
+
+      <h4 style="text-align: left; font-size: 11px; color: #a7f3d0; margin-bottom: 4px;">Kedudukan #4 dan #5:</h4>
+      <div class="rank-list" id="rankList"></div>
+    </div>
+  </div>
+
+  <script>
+    const SCRIPT_URL = "https://script.google.com/a/macros/moh.gov.my/s/AKfycby-EIW3S8SlsAXxipPGn3DAkDHFFLYeKHBMlk-9tSfCiMksUaauein5wS-ufU3KURrq/exec";
+
+    const TARGET_WORDS = ["TAWAKKAL", "SABAR", "IKHLAS", "SHIFA", "AMANAH", "SELAWAT", "REDHA", "ISTIQAMAH"];
+    
+    // Grid Papan Letter 10x10 Statik & Seimbang
+    const BOARD_GRID = [
+      ['T','A','W','A','K','K','A','L','S','A'],
+      ['S','I','K','H','L','A','S','E','E','M'],
+      ['A','S','T','I','Q','A','M','A','H','A'],
+      ['B','H','C','A','M','A','N','A','H','N'],
+      ['A','I','I','B','S','E','L','A','W','A'],
+      ['R','F','L','D','O','A','R','E','D','H'],
+      ['R','A','M','A','D','A','N','A','I','K'],
+      ['U','I','K','H','T','I','Y','A','R','L'],
+      ['H','A','L','A','L','R','E','D','H','A'],
+      ['K','H','U','S me','Y','U','K','U','R','S']
+    ];
+
+    let foundWords = [];
+    let selectedCells = [];
+    let timer = 0;
+    let timerInterval = null;
+    let gameStarted = false;
+    let finalCalculatedScore = 0;
+    let isPertandinganAktif = true;
+
+    function renderWordList() {
+      const container = document.getElementById("wordList");
+      container.innerHTML = "";
+      TARGET_WORDS.forEach(w => {
+        const span = document.createElement("span");
+        span.className = "word-item" + (foundWords.includes(w) ? " found" : "");
+        span.id = "word-" + w;
+        span.innerText = w;
+        container.appendChild(span);
+      });
+    }
+
+    function renderGrid() {
+      const grid = document.getElementById("grid");
+      grid.innerHTML = "";
+      for (let r = 0; r < 10; r++) {
+        for (let c = 0; c < 10; c++) {
+          const div = document.createElement("div");
+          div.className = "cell";
+          div.dataset.row = r;
+          div.dataset.col = c;
+          div.innerText = BOARD_GRID[r][c];
+          div.addEventListener("click", () => handleCellClick(r, c, div));
+          grid.appendChild(div);
+        }
+      }
+    }
+
+    function handleCellClick(r, c, el) {
+      if (!gameStarted || !isPertandinganAktif) return;
+
+      const cellObj = { r, c, char: BOARD_GRID[r][c], el };
+      
+      if (el.classList.contains("selected")) {
+        el.classList.remove("selected");
+        selectedCells = selectedCells.filter(item => !(item.r === r && item.c === c));
+      } else {
+        el.classList.add("selected");
+        selectedCells.push(cellObj);
+      }
+
+      checkWordMatch();
+    }
+
+    function checkWordMatch() {
+      let currentString = selectedCells.map(item => item.char).join("");
+      let reverseString = currentString.split("").reverse().join("");
+
+      TARGET_WORDS.forEach(word => {
+        if (!foundWords.includes(word) && (currentString === word || reverseString === word)) {
+          foundWords.push(word);
+          selectedCells.forEach(item => {
+            item.el.classList.remove("selected");
+            item.el.classList.add("found");
+          });
+          selectedCells = [];
+          document.getElementById("foundCount").innerText = foundWords.length;
+          renderWordList();
+
+          if (foundWords.length === TARGET_WORDS.length) {
+            endGame();
+          }
+        }
+      });
+    }
+
+    function mulaGame() {
+      if (!isPertandinganAktif) {
+        alert("Pertandingan telah ditutup!");
+        return;
+      }
+
+      foundWords = [];
+      selectedCells = [];
+      timer = 0;
+      gameStarted = true;
+
+      document.getElementById("foundCount").innerText = "0";
+      document.getElementById("timer").innerText = "0";
+      document.getElementById("scoreForm").style.display = "none";
+
+      renderWordList();
+      renderGrid();
+
+      clearInterval(timerInterval);
+      timerInterval = setInterval(() => {
+        timer++;
+        document.getElementById("timer").innerText = timer;
+      }, 1000);
+
+      document.getElementById("startBtn").disabled = true;
+      document.getElementById("startBtn").style.opacity = "0.5";
+    }
+
+    function endGame() {
+      clearInterval(timerInterval);
+      gameStarted = false;
+
+      // Formula Skor: Kelajuan Carian Perkataan
+      finalCalculatedScore = Math.max(50, 1200 - (timer * 5));
+
+      document.getElementById("finalScore").innerText = finalCalculatedScore;
+      document.getElementById("scoreForm").style.display = "block";
+      document.getElementById("startBtn").disabled = false;
+      document.getElementById("startBtn").style.opacity = "1";
+    }
+
+    function openModal() { document.getElementById("leaderboardModal").style.display = "flex"; }
+    function closeModal() { document.getElementById("leaderboardModal").style.display = "none"; }
+
+    function loadLeaderboard() {
+      fetch(SCRIPT_URL)
+        .then(res => res.json())
+        .then(resData => {
+          if (resData.isAktif === false) {
+            isPertandinganAktif = false;
+            document.getElementById("startBtn").disabled = true;
+            document.getElementById("startBtn").innerText = "🔒 PERTANDINGAN DITUTUP";
+          }
+
+          let data = resData.leaderboard || resData;
+          if (!data || data.length === 0) return;
+
+          if (data[0]) { document.getElementById("p1-name").innerText = data[0].nama; document.getElementById("p1-score").innerText = data[0].score + " pts"; }
+          if (data[1]) { document.getElementById("p2-name").innerText = data[1].nama; document.getElementById("p2-score").innerText = data[1].score + " pts"; }
+          if (data[2]) { document.getElementById("p3-name").innerText = data[2].nama; document.getElementById("p3-score").innerText = data[2].score + " pts"; }
+
+          let rankListHTML = "";
+          for (let i = 3; i < Math.min(data.length, 5); i++) {
+            rankListHTML += `
+              <div class="rank-item">
+                <span><b>#${i + 1} ${data[i].nama}</b> (${data[i].fasiliti || '-'})</span>
+                <span style="color: #facc15; font-weight: bold;">${data[i].score} pts</span>
+              </div>
+            `;
+          }
+          document.getElementById("rankList").innerHTML = rankListHTML || "<p style='text-align:center; color:#a7f3d0; padding:8px;'>Tiada di kedudukan 4-5 lagi.</p>";
+        })
+        .catch(err => console.error(err));
+    }
+
+    function hantarSkor() {
+      let nama = document.getElementById("nama").value;
+      let ic = document.getElementById("ic").value;
+      let noTel = document.getElementById("noTel").value;
+      let email = document.getElementById("email").value;
+      let fasiliti = document.getElementById("fasiliti").value;
+      let unit = document.getElementById("unit").value;
+      let jawatan = document.getElementById("jawatan").value;
+      let statusMsg = document.getElementById("statusMsg");
+      let submitBtn = document.querySelector(".btn-submit");
+
+      if (!nama || !ic || !noTel || !email || !fasiliti || !unit || !jawatan) {
+        alert("Sila lengkapkan kesemua maklumat anggota!");
+        return;
+      }
+
+      submitBtn.disabled = true;
+      submitBtn.style.opacity = "0.5";
+      statusMsg.style.color = "#facc15";
+      statusMsg.innerText = "⏳ Menghantar data skor...";
+
+      fetch(SCRIPT_URL, {
+        method: "POST",
+        mode: "no-cors",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          nama: nama,
+          ic: ic,
+          noTel: noTel,
+          email: email,
+          fasiliti: fasiliti,
+          unit: unit,
+          jawatan: jawatan,
+          duration: timer,
+          score: finalCalculatedScore
+        })
+      })
+      .then(() => {
+        statusMsg.style.color = "#34d399";
+        statusMsg.innerText = "✅ Alhamdulillah, skor anda berjaya dihantar!";
+        
+        loadLeaderboard();
+
+        setTimeout(() => {
+          document.getElementById("scoreForm").style.display = "none";
+          document.getElementById("nama").value = "";
+          document.getElementById("ic").value = "";
+          document.getElementById("noTel").value = "";
+          document.getElementById("email").value = "";
+          document.getElementById("fasiliti").value = "";
+          document.getElementById("unit").value = "";
+          document.getElementById("jawatan").value = "";
+          statusMsg.innerText = "";
+
+          submitBtn.disabled = false;
+          submitBtn.style.opacity = "1";
+
+          openModal();
+        }, 2000);
+      })
+      .catch(err => {
+        statusMsg.style.color = "#f87171";
+        statusMsg.innerText = "❌ Gagal hantar data. Sila cuba lagi.";
+        submitBtn.disabled = false;
+        submitBtn.style.opacity = "1";
+      });
+    }
+
+    renderWordList();
+    renderGrid();
+    loadLeaderboard();
+  </script>
+</body>
+</html>
