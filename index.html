@@ -80,7 +80,7 @@
   <button class="btn-start" id="startBtn" onclick="mulaGame()">MULA GAME ▶️</button>
   <button class="btn-view-all" onclick="openModal()">📜 Carta Top 5 Pemain</button>
 
-  <!-- BORANG -->
+  <!-- BORANG PENDAFTARAN ANGGOTA -->
   <div class="form-container" id="scoreForm" style="display: none;">
     <h3 style="text-align: center; color: #facc15;">ALHAMDULILLAH, JUMPA SEMUA!</h3>
     <p style="text-align: center; font-size: 13px; margin-bottom: 8px;">Markah Skor: <b id="finalScore" style="font-size: 18px; color: #34d399;">0</b> pts</p>
@@ -147,24 +147,11 @@
   </div>
 
   <script>
-    const SCRIPT_URL = "https://script.google.com/a/macros/moh.gov.my/s/AKfycby-EIW3S8SlsAXxipPGn3DAkDHFFLYeKHBMlk-9tSfCiMksUaauein5wS-ufU3KURrq/exec";
+    const SCRIPT_URL = "https://script.google.com/a/macros/moh.gov.my/s/AKfycbzAapStCYqPXkcLTmiDeAMvZXSaby76kOn7KhRSMalTa-9FsXbVUPYwWqi5RXfJ_0H6Fw/exec";
 
     const TARGET_WORDS = ["TAWAKKAL", "SABAR", "IKHLAS", "SHIFA", "AMANAH", "SELAWAT", "REDHA", "ISTIQAMAH"];
     
-    // Grid Papan Letter 10x10 Statik & Seimbang
-    const BOARD_GRID = [
-      ['T','A','W','A','K','K','A','L','S','A'],
-      ['S','I','K','H','L','A','S','E','E','M'],
-      ['A','S','T','I','Q','A','M','A','H','A'],
-      ['B','H','C','A','M','A','N','A','H','N'],
-      ['A','I','I','B','S','E','L','A','W','A'],
-      ['R','F','L','D','O','A','R','E','D','H'],
-      ['R','A','M','A','D','A','N','A','I','K'],
-      ['U','I','K','H','T','I','Y','A','R','L'],
-      ['H','A','L','A','L','R','E','D','H','A'],
-      ['K','H','U','S me','Y','U','K','U','R','S']
-    ];
-
+    let boardGrid = [];
     let foundWords = [];
     let selectedCells = [];
     let timer = 0;
@@ -172,6 +159,69 @@
     let gameStarted = false;
     let finalCalculatedScore = 0;
     let isPertandinganAktif = true;
+
+    // GENERATOR GRID RAWAK & DINAMIK
+    function generateRandomGrid() {
+      // Inisialisasi grid 10x10 dengan nilai kosong
+      boardGrid = Array(10).fill(null).map(() => Array(10).fill(''));
+
+      // Susun perkataan secara rawak (Horizontal @ Vertical)
+      TARGET_WORDS.forEach(word => {
+        let placed = false;
+        let attempts = 0;
+
+        while (!placed && attempts < 100) {
+          attempts++;
+          let isHorizontal = Math.random() < 0.5;
+          let row = Math.floor(Math.random() * 10);
+          let col = Math.floor(Math.random() * 10);
+
+          if (isHorizontal) {
+            if (col + word.length <= 10) {
+              let canPlace = true;
+              for (let i = 0; i < word.length; i++) {
+                if (boardGrid[row][col + i] !== '' && boardGrid[row][col + i] !== word[i]) {
+                  canPlace = false;
+                  break;
+                }
+              }
+              if (canPlace) {
+                for (let i = 0; i < word.length; i++) {
+                  boardGrid[row][col + i] = word[i];
+                }
+                placed = true;
+              }
+            }
+          } else { // Vertical
+            if (row + word.length <= 10) {
+              let canPlace = true;
+              for (let i = 0; i < word.length; i++) {
+                if (boardGrid[row + i][col] !== '' && boardGrid[row + i][col] !== word[i]) {
+                  canPlace = false;
+                  break;
+                }
+              }
+              if (canPlace) {
+                for (let i = 0; i < word.length; i++) {
+                  boardGrid[row + i][col] = word[i];
+                }
+                placed = true;
+              }
+            }
+          }
+        }
+      });
+
+      // Isi petak baki yang kosong dengan huruf rawak A-Z
+      const letters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+      for (let r = 0; r < 10; r++) {
+        for (let c = 0; c < 10; c++) {
+          if (boardGrid[r][c] === '') {
+            boardGrid[r][c] = letters.charAt(Math.floor(Math.random() * letters.length));
+          }
+        }
+      }
+    }
 
     function renderWordList() {
       const container = document.getElementById("wordList");
@@ -194,7 +244,7 @@
           div.className = "cell";
           div.dataset.row = r;
           div.dataset.col = c;
-          div.innerText = BOARD_GRID[r][c];
+          div.innerText = boardGrid[r][c];
           div.addEventListener("click", () => handleCellClick(r, c, div));
           grid.appendChild(div);
         }
@@ -204,14 +254,12 @@
     function handleCellClick(r, c, el) {
       if (!gameStarted || !isPertandinganAktif) return;
 
-      const cellObj = { r, c, char: BOARD_GRID[r][c], el };
-      
       if (el.classList.contains("selected")) {
         el.classList.remove("selected");
         selectedCells = selectedCells.filter(item => !(item.r === r && item.c === c));
       } else {
         el.classList.add("selected");
-        selectedCells.push(cellObj);
+        selectedCells.push({ r, c, char: boardGrid[r][c], el });
       }
 
       checkWordMatch();
@@ -254,6 +302,8 @@
       document.getElementById("timer").innerText = "0";
       document.getElementById("scoreForm").style.display = "none";
 
+      // Jana papan grid rawak baharu
+      generateRandomGrid();
       renderWordList();
       renderGrid();
 
@@ -271,7 +321,6 @@
       clearInterval(timerInterval);
       gameStarted = false;
 
-      // Formula Skor: Kelajuan Carian Perkataan
       finalCalculatedScore = Math.max(50, 1200 - (timer * 5));
 
       document.getElementById("finalScore").innerText = finalCalculatedScore;
@@ -382,6 +431,7 @@
       });
     }
 
+    generateRandomGrid();
     renderWordList();
     renderGrid();
     loadLeaderboard();
