@@ -25,7 +25,7 @@
     .card.flipped { background: linear-gradient(135deg, #10b981, #047857); color: #ffffff; border-color: #facc15; transform: rotateY(180deg); }
     .card.matched { background: #022c22; border-color: #facc15; color: #34d399; opacity: 0.6; cursor: default; }
 
-    /* BUTANG */
+    /* BUTANG UTAMA */
     .btn-start { width: 320px; padding: 12px; background: linear-gradient(135deg, #eab308, #ca8a04); color: #022c22; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; font-size: 15px; margin-top: 8px; box-shadow: 0 4px 10px rgba(234, 179, 8, 0.4); text-transform: uppercase; }
     .btn-view-all { width: 320px; padding: 10px; background: #022c22; color: #facc15; border: 1px solid #facc15; border-radius: 8px; font-weight: bold; cursor: pointer; font-size: 13px; margin-top: 8px; }
 
@@ -141,7 +141,8 @@
   </div>
 
   <script>
-    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwAiI-aFhEExfDPZOc8vLyQ4DQhJQsXJnbVeGG1d9elBMyweoP9iR05u582DfDVlolyZg/exec";
+    // PASTE URL GOOGLE APPS SCRIPT ANDA DI SINI
+    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbziCQYhkkNLg1uyKIL31aPQa_--ayNe6Cxso_BlblHnl5WMmRls05RYer9LacUAhjKq-g/exec";
 
     // 8 PASANGAN KATA ISLAMIK (16 KAD TOTAL)
     const CARD_PAIRS = [
@@ -179,7 +180,7 @@
       cards.forEach((card, index) => {
         const div = document.createElement("div");
         div.className = "card";
-        div.innerText = "🕌"; // Latar belakang kad bertutup
+        div.innerText = "🕌";
         div.addEventListener("click", () => flipCard(div, card, index));
         grid.appendChild(div);
       });
@@ -256,7 +257,6 @@
       clearInterval(timerInterval);
       gameStarted = false;
 
-      // Formula Pengiraan Skor: Kelajuan Masa & Kepantasan Kad
       finalCalculatedScore = Math.max(50, 1500 - (timer * 6) - (flipCount * 10));
 
       document.getElementById("finalScore").innerText = finalCalculatedScore;
