@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Biro Agama KESUKES Kemaman - Padanan Kata Islamik</title>
+  <title>Biro Agama KESUKES Kemaman - Padanan Kata Islamik (Mencabar)</title>
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Arial, sans-serif; }
     body { text-align: center; background: #064e3b; color: white; display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 100vh; padding: 15px; background-image: radial-gradient(#047857 1px, transparent 1px); background-size: 20px 20px; }
@@ -14,7 +14,7 @@
     p.sub { font-size: 12px; color: #a7f3d0; margin-bottom: 6px; max-width: 320px; line-height: 1.3; }
     .date-banner { background: #022c22; color: #facc15; border: 1px solid #facc15; font-size: 11px; padding: 4px 12px; border-radius: 20px; margin-bottom: 10px; font-weight: bold; }
 
-    /* DASHBOARD */
+    /* DASHBOARD MENCABAR */
     .dashboard { display: flex; justify-content: space-around; width: 320px; background: #022c22; padding: 8px; border-radius: 10px; border: 1px solid #facc15; margin-bottom: 10px; box-shadow: 0 4px 10px rgba(0,0,0,0.3); }
     .dash-box { font-size: 13px; font-weight: bold; color: #ecfdf5; }
     .dash-box span { font-size: 16px; color: #facc15; }
@@ -59,14 +59,14 @@
 
   <div class="header-container">
     <img src="https://i.postimg.cc/QtPnsW43/svg.png" alt="Logo KESUKES" class="logo-kesukes">
-    <h1>🧩 Padanan Kata Islamik KESUKES</h1>
-    <p class="sub"><b>Biro Agama KESUKES Cawangan Kemaman</b><br>Padankan 8 Pasangan Kata Sunnah & Islamik!</p>
+    <h1>🔥 Padanan Kata Islamik (Cabaran)</h1>
+    <p class="sub"><b>Biro Agama KESUKES Cawangan Kemaman</b><br>Masa: 60 Saat | Maksimum Kesilapan: 8 Kali</p>
     <div class="date-banner" id="dateBanner">📅 Cabaran Ke-3 Berlangsung</div>
   </div>
 
   <div class="dashboard">
-    <div class="dash-box">Masa: <span id="timer">0</span>s</div>
-    <div class="dash-box">Percubaan: <span id="flips">0</span></div>
+    <div class="dash-box">Masa: <span id="timer" style="color:#f87171;">60</span>s</div>
+    <div class="dash-box">Salah: <span id="mistakes">0</span>/8</div>
   </div>
 
   <div class="memory-grid" id="grid"></div>
@@ -76,7 +76,7 @@
 
   <!-- BORANG PENDAFTARAN ANGGOTA -->
   <div class="form-container" id="scoreForm" style="display: none;">
-    <h3 style="text-align: center; color: #facc15;">ALHAMDULILLAH, TAHNIAH!</h3>
+    <h3 style="text-align: center; color: #facc15;">ALHAMDULILLAH, SYABAS!</h3>
     <p style="text-align: center; font-size: 13px; margin-bottom: 8px;">Markah Skor: <b id="finalScore" style="font-size: 18px; color: #34d399;">0</b> pts</p>
     
     <label>Nama Penuh Anggota:</label>
@@ -141,26 +141,24 @@
   </div>
 
   <script>
-    // PASTE URL GOOGLE APPS SCRIPT ANDA DI SINI
-    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbziCQYhkkNLg1uyKIL31aPQa_--ayNe6Cxso_BlblHnl5WMmRls05RYer9LacUAhjKq-g/exec";
+    const SCRIPT_URL = "https://script.google.com/a/macros/moh.gov.my/s/AKfycby-EIW3S8SlsAXxipPGn3DAkDHFFLYeKHBMlk-9tSfCiMksUaauein5wS-ufU3KURrq/exec";
 
-    // 8 PASANGAN KATA ISLAMIK (16 KAD TOTAL)
     const CARD_PAIRS = [
-      { id: 1, text: "Nabi Musa" }, { id: 1, text: "Tongkat & Laut" },
+      { id: 1, text: "Nabi Musa" }, { id: 1, text: "Laut Belah" },
       { id: 2, text: "Nabi Ibrahim" }, { id: 2, text: "Khalilullah" },
-      { id: 3, text: "Sifat Wujud" }, { id: 3, text: "Ada" },
-      { id: 4, text: "Sifat Baqa'" }, { id: 4, text: "Kekal" },
-      { id: 5, text: "Rukun 1" }, { id: 5, text: "Syahadah" },
-      { id: 6, text: "Rukun 2" }, { id: 6, text: "Solat 5 Waktu" },
-      { id: 7, text: "Tawakkal" }, { id: 7, text: "Berserah" },
-      { id: 8, text: "Ikhlas" }, { id: 8, text: "Murni Hati" }
+      { id: 3, text: "Sifat Wujud" }, { id: 3, text: "Maksud: Ada" },
+      { id: 4, text: "Sifat Baqa'" }, { id: 4, text: "Maksud: Kekal" },
+      { id: 5, text: "Rukun Islam 1" }, { id: 5, text: "Dua Syahadah" },
+      { id: 6, text: "Rukun Islam 2" }, { id: 6, text: "Solat 5 Waktu" },
+      { id: 7, text: "Tawakkal" }, { id: 7, text: "Pasrah Kehendak" },
+      { id: 8, text: "Ikhlas" }, { id: 8, text: "Murni Kerana Allah" }
     ];
 
     let cards = [];
     let flippedCards = [];
     let matchedCount = 0;
-    let flipCount = 0;
-    let timer = 0;
+    let mistakes = 0;
+    let timeLeft = 60;
     let timerInterval = null;
     let gameStarted = false;
     let finalCalculatedScore = 0;
@@ -196,8 +194,6 @@
       flippedCards.push({ el: cardEl, obj: cardObj });
 
       if (flippedCards.length === 2) {
-        flipCount++;
-        document.getElementById("flips").innerText = flipCount;
         checkMatch();
       }
     }
@@ -211,16 +207,27 @@
         flippedCards = [];
 
         if (matchedCount === 8) {
-          endGame();
+          endGame(true);
         }
       } else {
+        mistakes++;
+        document.getElementById("mistakes").innerText = mistakes;
+        
+        if (mistakes >= 8) {
+          setTimeout(() => {
+            alert("❌ Game Over! Anda telah melebihi had kesilapan (8 kali).");
+            endGame(false);
+          }, 500);
+          return;
+        }
+
         setTimeout(() => {
           c1.el.classList.remove("flipped");
           c2.el.classList.remove("flipped");
           c1.el.innerText = "🕌";
           c2.el.innerText = "🕌";
           flippedCards = [];
-        }, 900);
+        }, 700);
       }
     }
 
@@ -232,12 +239,12 @@
 
       flippedCards = [];
       matchedCount = 0;
-      flipCount = 0;
-      timer = 0;
+      mistakes = 0;
+      timeLeft = 60;
       gameStarted = true;
 
-      document.getElementById("flips").innerText = "0";
-      document.getElementById("timer").innerText = "0";
+      document.getElementById("mistakes").innerText = "0";
+      document.getElementById("timer").innerText = "60";
       document.getElementById("scoreForm").style.display = "none";
 
       shuffleCards();
@@ -245,22 +252,31 @@
 
       clearInterval(timerInterval);
       timerInterval = setInterval(() => {
-        timer++;
-        document.getElementById("timer").innerText = timer;
+        timeLeft--;
+        document.getElementById("timer").innerText = timeLeft;
+
+        if (timeLeft <= 0) {
+          clearInterval(timerInterval);
+          alert("⏱️ Masa Tamat! Anda tidak sempat menyelesaikan padanan.");
+          endGame(false);
+        }
       }, 1000);
 
       document.getElementById("startBtn").disabled = true;
       document.getElementById("startBtn").style.opacity = "0.5";
     }
 
-    function endGame() {
+    function endGame(isWin) {
       clearInterval(timerInterval);
       gameStarted = false;
 
-      finalCalculatedScore = Math.max(50, 1500 - (timer * 6) - (flipCount * 10));
+      if (isWin) {
+        // Formula Pengiraan Skor: Baki Masa & Penalti Kesilapan
+        finalCalculatedScore = Math.max(50, (timeLeft * 25) - (mistakes * 30));
+        document.getElementById("finalScore").innerText = finalCalculatedScore;
+        document.getElementById("scoreForm").style.display = "block";
+      }
 
-      document.getElementById("finalScore").innerText = finalCalculatedScore;
-      document.getElementById("scoreForm").style.display = "block";
       document.getElementById("startBtn").disabled = false;
       document.getElementById("startBtn").style.opacity = "1";
     }
@@ -282,7 +298,7 @@
           if (!data || data.length === 0) return;
 
           if (data[0]) { document.getElementById("p1-name").innerText = data[0].nama; document.getElementById("p1-score").innerText = data[0].score + " pts"; }
-          if (data[1]) { document.getElementById("p2-name").innerText = data[1].nama; document.getElementById("p2-score").innerText = data[1].score + " pts"; }
+          if (data[1]) { document.getElementById("p2-name").innerText = data[1].nama; document.getElementById("p2-score").innerText = data[0].score + " pts"; }
           if (data[2]) { document.getElementById("p3-name").innerText = data[2].nama; document.getElementById("p3-score").innerText = data[2].score + " pts"; }
 
           let rankListHTML = "";
@@ -332,8 +348,8 @@
           fasiliti: fasiliti,
           unit: unit,
           jawatan: jawatan,
-          flips: flipCount,
-          duration: timer,
+          timeLeft: timeLeft,
+          mistakes: mistakes,
           score: finalCalculatedScore
         })
       })
