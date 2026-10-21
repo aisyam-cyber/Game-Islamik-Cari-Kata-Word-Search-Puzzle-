@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Biro Agama KESUKES Kemaman - Cari Kata Islamik</title>
+  <title>Biro Agama KESUKES Kemaman - Padanan Kata Islamik</title>
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Arial, sans-serif; }
     body { text-align: center; background: #064e3b; color: white; display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 100vh; padding: 15px; background-image: radial-gradient(#047857 1px, transparent 1px); background-size: 20px 20px; }
@@ -19,16 +19,11 @@
     .dash-box { font-size: 13px; font-weight: bold; color: #ecfdf5; }
     .dash-box span { font-size: 16px; color: #facc15; }
 
-    /* SENARAI PERKATAAN */
-    .word-list { display: flex; flex-wrap: wrap; justify-content: center; gap: 6px; width: 320px; margin-bottom: 10px; background: #022c22; padding: 8px; border-radius: 8px; border: 1px solid #047857; }
-    .word-item { font-size: 11px; padding: 3px 8px; background: #064e3b; border-radius: 12px; color: #a7f3d0; border: 1px solid #047857; font-weight: bold; }
-    .word-item.found { background: #10b981; color: #022c22; text-decoration: line-through; border-color: #facc15; }
-
-    /* GRID WORD SEARCH (10x10) */
-    .grid-container { display: grid; grid-template-columns: repeat(10, 1fr); gap: 3px; width: 320px; height: 320px; background: #022c22; padding: 6px; border-radius: 12px; border: 3px solid #facc15; box-shadow: 0 10px 25px rgba(0,0,0,0.5); touch-action: none; user-select: none; }
-    .cell { background: #065f46; color: #ffffff; border-radius: 4px; display: flex; align-items: center; justify-content: center; font-size: 15px; font-weight: bold; cursor: pointer; border: 1px solid #047857; transition: 0.1s; }
-    .cell.selected { background: #facc15; color: #022c22; }
-    .cell.found { background: #10b981; color: #022c22; border-color: #facc15; }
+    /* GRID KAD (4x4) */
+    .memory-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; width: 320px; height: 340px; background: #022c22; padding: 10px; border-radius: 12px; border: 3px solid #facc15; box-shadow: 0 10px 25px rgba(0,0,0,0.5); }
+    .card { background: #065f46; border: 2px solid #047857; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: bold; color: #facc15; cursor: pointer; user-select: none; transition: transform 0.3s, background 0.3s; text-align: center; padding: 4px; word-break: break-word; }
+    .card.flipped { background: linear-gradient(135deg, #10b981, #047857); color: #ffffff; border-color: #facc15; transform: rotateY(180deg); }
+    .card.matched { background: #022c22; border-color: #facc15; color: #34d399; opacity: 0.6; cursor: default; }
 
     /* BUTANG */
     .btn-start { width: 320px; padding: 12px; background: linear-gradient(135deg, #eab308, #ca8a04); color: #022c22; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; font-size: 15px; margin-top: 8px; box-shadow: 0 4px 10px rgba(234, 179, 8, 0.4); text-transform: uppercase; }
@@ -64,25 +59,24 @@
 
   <div class="header-container">
     <img src="https://i.postimg.cc/QtPnsW43/svg.png" alt="Logo KESUKES" class="logo-kesukes">
-    <h1>🔍 Cari Kata Islamik KESUKES</h1>
-    <p class="sub"><b>Biro Agama KESUKES Cawangan Kemaman</b><br>Cari 8 perkataan Sifat Mahmudah terpantas!</p>
-    <div class="date-banner" id="dateBanner">📅 Cabaran Ke-2 Berlangsung</div>
+    <h1>🧩 Padanan Kata Islamik KESUKES</h1>
+    <p class="sub"><b>Biro Agama KESUKES Cawangan Kemaman</b><br>Padankan 8 Pasangan Kata Sunnah & Islamik!</p>
+    <div class="date-banner" id="dateBanner">📅 Cabaran Ke-3 Berlangsung</div>
   </div>
 
   <div class="dashboard">
     <div class="dash-box">Masa: <span id="timer">0</span>s</div>
-    <div class="dash-box">Dijumpai: <span id="foundCount">0</span>/8</div>
+    <div class="dash-box">Percubaan: <span id="flips">0</span></div>
   </div>
 
-  <div class="word-list" id="wordList"></div>
-  <div class="grid-container" id="grid"></div>
+  <div class="memory-grid" id="grid"></div>
 
   <button class="btn-start" id="startBtn" onclick="mulaGame()">MULA GAME ▶️</button>
   <button class="btn-view-all" onclick="openModal()">📜 Carta Top 5 Pemain</button>
 
   <!-- BORANG PENDAFTARAN ANGGOTA -->
   <div class="form-container" id="scoreForm" style="display: none;">
-    <h3 style="text-align: center; color: #facc15;">ALHAMDULILLAH, JUMPA SEMUA!</h3>
+    <h3 style="text-align: center; color: #facc15;">ALHAMDULILLAH, TAHNIAH!</h3>
     <p style="text-align: center; font-size: 13px; margin-bottom: 8px;">Markah Skor: <b id="finalScore" style="font-size: 18px; color: #34d399;">0</b> pts</p>
     
     <label>Nama Penuh Anggota:</label>
@@ -147,144 +141,86 @@
   </div>
 
   <script>
-    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzoHS8Go6-iU6USZ3cDx9bSHrEsSL23nmuBv3GJ9FxxbZmCBqxFNEtC4psuWZ0g6Qt7lA/exec";
+    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwAiI-aFhEExfDPZOc8vLyQ4DQhJQsXJnbVeGG1d9elBMyweoP9iR05u582DfDVlolyZg/exec";
 
-    const TARGET_WORDS = ["TAWAKKAL", "SABAR", "IKHLAS", "SHIFA", "AMANAH", "SELAWAT", "REDHA", "ISTIQAMAH"];
-    
-    let boardGrid = [];
-    let foundWords = [];
-    let selectedCells = [];
+    // 8 PASANGAN KATA ISLAMIK (16 KAD TOTAL)
+    const CARD_PAIRS = [
+      { id: 1, text: "Nabi Musa" }, { id: 1, text: "Tongkat & Laut" },
+      { id: 2, text: "Nabi Ibrahim" }, { id: 2, text: "Khalilullah" },
+      { id: 3, text: "Sifat Wujud" }, { id: 3, text: "Ada" },
+      { id: 4, text: "Sifat Baqa'" }, { id: 4, text: "Kekal" },
+      { id: 5, text: "Rukun 1" }, { id: 5, text: "Syahadah" },
+      { id: 6, text: "Rukun 2" }, { id: 6, text: "Solat 5 Waktu" },
+      { id: 7, text: "Tawakkal" }, { id: 7, text: "Berserah" },
+      { id: 8, text: "Ikhlas" }, { id: 8, text: "Murni Hati" }
+    ];
+
+    let cards = [];
+    let flippedCards = [];
+    let matchedCount = 0;
+    let flipCount = 0;
     let timer = 0;
     let timerInterval = null;
     let gameStarted = false;
     let finalCalculatedScore = 0;
     let isPertandinganAktif = true;
 
-    // GENERATOR GRID RAWAK & DINAMIK
-    function generateRandomGrid() {
-      // Inisialisasi grid 10x10 dengan nilai kosong
-      boardGrid = Array(10).fill(null).map(() => Array(10).fill(''));
-
-      // Susun perkataan secara rawak (Horizontal @ Vertical)
-      TARGET_WORDS.forEach(word => {
-        let placed = false;
-        let attempts = 0;
-
-        while (!placed && attempts < 100) {
-          attempts++;
-          let isHorizontal = Math.random() < 0.5;
-          let row = Math.floor(Math.random() * 10);
-          let col = Math.floor(Math.random() * 10);
-
-          if (isHorizontal) {
-            if (col + word.length <= 10) {
-              let canPlace = true;
-              for (let i = 0; i < word.length; i++) {
-                if (boardGrid[row][col + i] !== '' && boardGrid[row][col + i] !== word[i]) {
-                  canPlace = false;
-                  break;
-                }
-              }
-              if (canPlace) {
-                for (let i = 0; i < word.length; i++) {
-                  boardGrid[row][col + i] = word[i];
-                }
-                placed = true;
-              }
-            }
-          } else { // Vertical
-            if (row + word.length <= 10) {
-              let canPlace = true;
-              for (let i = 0; i < word.length; i++) {
-                if (boardGrid[row + i][col] !== '' && boardGrid[row + i][col] !== word[i]) {
-                  canPlace = false;
-                  break;
-                }
-              }
-              if (canPlace) {
-                for (let i = 0; i < word.length; i++) {
-                  boardGrid[row + i][col] = word[i];
-                }
-                placed = true;
-              }
-            }
-          }
-        }
-      });
-
-      // Isi petak baki yang kosong dengan huruf rawak A-Z
-      const letters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-      for (let r = 0; r < 10; r++) {
-        for (let c = 0; c < 10; c++) {
-          if (boardGrid[r][c] === '') {
-            boardGrid[r][c] = letters.charAt(Math.floor(Math.random() * letters.length));
-          }
-        }
+    function shuffleCards() {
+      cards = [...CARD_PAIRS];
+      for (let i = cards.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [cards[i], cards[j]] = [cards[j], cards[i]];
       }
     }
 
-    function renderWordList() {
-      const container = document.getElementById("wordList");
-      container.innerHTML = "";
-      TARGET_WORDS.forEach(w => {
-        const span = document.createElement("span");
-        span.className = "word-item" + (foundWords.includes(w) ? " found" : "");
-        span.id = "word-" + w;
-        span.innerText = w;
-        container.appendChild(span);
-      });
-    }
-
-    function renderGrid() {
+    function renderBoard() {
       const grid = document.getElementById("grid");
       grid.innerHTML = "";
-      for (let r = 0; r < 10; r++) {
-        for (let c = 0; c < 10; c++) {
-          const div = document.createElement("div");
-          div.className = "cell";
-          div.dataset.row = r;
-          div.dataset.col = c;
-          div.innerText = boardGrid[r][c];
-          div.addEventListener("click", () => handleCellClick(r, c, div));
-          grid.appendChild(div);
-        }
-      }
-    }
-
-    function handleCellClick(r, c, el) {
-      if (!gameStarted || !isPertandinganAktif) return;
-
-      if (el.classList.contains("selected")) {
-        el.classList.remove("selected");
-        selectedCells = selectedCells.filter(item => !(item.r === r && item.c === c));
-      } else {
-        el.classList.add("selected");
-        selectedCells.push({ r, c, char: boardGrid[r][c], el });
-      }
-
-      checkWordMatch();
-    }
-
-    function checkWordMatch() {
-      let currentString = selectedCells.map(item => item.char).join("");
-      let reverseString = currentString.split("").reverse().join("");
-
-      TARGET_WORDS.forEach(word => {
-        if (!foundWords.includes(word) && (currentString === word || reverseString === word)) {
-          foundWords.push(word);
-          selectedCells.forEach(item => {
-            item.el.classList.remove("selected");
-            item.el.classList.add("found");
-          });
-          selectedCells = [];
-          document.getElementById("foundCount").innerText = foundWords.length;
-          renderWordList();
-
-          if (foundWords.length === TARGET_WORDS.length) {
-            endGame();
-          }
-        }
+      cards.forEach((card, index) => {
+        const div = document.createElement("div");
+        div.className = "card";
+        div.innerText = "🕌"; // Latar belakang kad bertutup
+        div.addEventListener("click", () => flipCard(div, card, index));
+        grid.appendChild(div);
       });
+    }
+
+    function flipCard(cardEl, cardObj, index) {
+      if (!gameStarted || !isPertandinganAktif || flippedCards.length >= 2 || cardEl.classList.contains("flipped") || cardEl.classList.contains("matched")) {
+        return;
+      }
+
+      cardEl.classList.add("flipped");
+      cardEl.innerText = cardObj.text;
+      flippedCards.push({ el: cardEl, obj: cardObj });
+
+      if (flippedCards.length === 2) {
+        flipCount++;
+        document.getElementById("flips").innerText = flipCount;
+        checkMatch();
+      }
+    }
+
+    function checkMatch() {
+      const [c1, c2] = flippedCards;
+      if (c1.obj.id === c2.obj.id) {
+        c1.el.classList.add("matched");
+        c2.el.classList.add("matched");
+        matchedCount++;
+        flippedCards = [];
+
+        if (matchedCount === 8) {
+          endGame();
+        }
+      } else {
+        setTimeout(() => {
+          c1.el.classList.remove("flipped");
+          c2.el.classList.remove("flipped");
+          c1.el.innerText = "🕌";
+          c2.el.innerText = "🕌";
+          flippedCards = [];
+        }, 900);
+      }
     }
 
     function mulaGame() {
@@ -293,19 +229,18 @@
         return;
       }
 
-      foundWords = [];
-      selectedCells = [];
+      flippedCards = [];
+      matchedCount = 0;
+      flipCount = 0;
       timer = 0;
       gameStarted = true;
 
-      document.getElementById("foundCount").innerText = "0";
+      document.getElementById("flips").innerText = "0";
       document.getElementById("timer").innerText = "0";
       document.getElementById("scoreForm").style.display = "none";
 
-      // Jana papan grid rawak baharu
-      generateRandomGrid();
-      renderWordList();
-      renderGrid();
+      shuffleCards();
+      renderBoard();
 
       clearInterval(timerInterval);
       timerInterval = setInterval(() => {
@@ -321,7 +256,8 @@
       clearInterval(timerInterval);
       gameStarted = false;
 
-      finalCalculatedScore = Math.max(50, 1200 - (timer * 5));
+      // Formula Pengiraan Skor: Kelajuan Masa & Kepantasan Kad
+      finalCalculatedScore = Math.max(50, 1500 - (timer * 6) - (flipCount * 10));
 
       document.getElementById("finalScore").innerText = finalCalculatedScore;
       document.getElementById("scoreForm").style.display = "block";
@@ -396,6 +332,7 @@
           fasiliti: fasiliti,
           unit: unit,
           jawatan: jawatan,
+          flips: flipCount,
           duration: timer,
           score: finalCalculatedScore
         })
@@ -431,9 +368,8 @@
       });
     }
 
-    generateRandomGrid();
-    renderWordList();
-    renderGrid();
+    shuffleCards();
+    renderBoard();
     loadLeaderboard();
   </script>
 </body>
