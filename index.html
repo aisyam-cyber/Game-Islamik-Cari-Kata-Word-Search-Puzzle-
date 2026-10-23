@@ -3,26 +3,38 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Biro Agama KESUKES Kemaman - Menara Masjid Islamik</title>
+  <title>Biro Agama KESUKES Kemaman - Cari Kata Islamik</title>
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Arial, sans-serif; }
-    body { text-align: center; background: #064e3b; color: white; display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 100vh; padding: 15px; background-image: radial-gradient(#047857 1px, transparent 1px); background-size: 20px 20px; }
+    body { text-align: center; background: #042f2e; color: white; display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 100vh; padding: 15px; background-image: radial-gradient(#059669 1px, transparent 1px); background-size: 20px 20px; }
     
-    .header-container { display: flex; flex-direction: column; align-items: center; margin-bottom: 8px; }
-    .logo-kesukes { width: 75px; height: auto; margin-bottom: 4px; filter: drop-shadow(0 4px 6px rgba(0,0,0,0.3)); }
-    h1 { font-size: 19px; color: #facc15; text-shadow: 0 0 10px rgba(250, 204, 21, 0.4); margin-bottom: 2px; font-weight: bold; }
-    p.sub { font-size: 11px; color: #a7f3d0; margin-bottom: 6px; max-width: 320px; line-height: 1.3; }
+    /* PROMO BANNER RADIO STYLE */
+    .promo-badge { background: linear-gradient(90deg, #ca8a04, #eab308); color: #022c22; font-size: 10px; font-weight: 900; letter-spacing: 1px; padding: 4px 12px; border-radius: 20px; text-transform: uppercase; margin-bottom: 6px; box-shadow: 0 0 10px rgba(234, 179, 8, 0.6); }
+    
+    .header-container { display: flex; flex-direction: column; align-items: center; margin-bottom: 10px; }
+    .logo-kesukes { width: 85px; height: auto; margin-bottom: 6px; filter: drop-shadow(0 4px 8px rgba(0,0,0,0.5)); }
+    h1 { font-size: 21px; color: #facc15; text-shadow: 0 0 12px rgba(250, 204, 21, 0.6); margin-bottom: 4px; font-weight: 900; text-transform: uppercase; }
+    p.sub { font-size: 12px; color: #a7f3d0; margin-bottom: 6px; max-width: 320px; line-height: 1.3; font-weight: 600; }
+    .date-banner { background: #022c22; color: #facc15; border: 1px solid #facc15; font-size: 11px; padding: 4px 14px; border-radius: 20px; margin-bottom: 10px; font-weight: bold; }
 
-    /* DASHBOARD */
-    .dashboard { display: flex; justify-content: space-around; width: 320px; background: #022c22; padding: 8px; border-radius: 10px; border: 1px solid #facc15; margin-bottom: 8px; box-shadow: 0 4px 10px rgba(0,0,0,0.3); }
-    .dash-box { font-size: 12px; font-weight: bold; color: #ecfdf5; }
-    .dash-box span { font-size: 15px; color: #facc15; }
+    /* DASHBOARD MASA & PERKATAAN */
+    .dashboard { display: flex; justify-content: space-around; width: 320px; background: #022c22; padding: 10px; border-radius: 12px; border: 1px solid #facc15; margin-bottom: 10px; box-shadow: 0 4px 12px rgba(0,0,0,0.4); }
+    .dash-box { font-size: 13px; font-weight: bold; color: #ecfdf5; }
+    .dash-box span { font-size: 18px; color: #facc15; text-shadow: 0 0 6px rgba(250, 204, 21, 0.4); }
 
-    /* GAME CANVAS */
-    #gameCanvas { background: #022c22; border: 3px solid #facc15; border-radius: 12px; box-shadow: 0 8px 20px rgba(0,0,0,0.5); cursor: pointer; touch-action: manipulation; }
+    /* SENARAI PERKATAAN PROMO STYLE */
+    .word-list { display: flex; flex-wrap: wrap; justify-content: center; gap: 6px; width: 320px; margin-bottom: 10px; background: #022c22; padding: 10px; border-radius: 10px; border: 1px solid #047857; }
+    .word-item { font-size: 11px; padding: 4px 9px; background: #064e3b; border-radius: 14px; color: #a7f3d0; border: 1px solid #047857; font-weight: bold; transition: 0.3s; }
+    .word-item.found { background: linear-gradient(135deg, #10b981, #047857); color: #ffffff; text-decoration: line-through; border-color: #facc15; box-shadow: 0 0 8px rgba(52, 211, 153, 0.6); }
 
-    /* BUTANG UTAMA */
-    .btn-start { width: 320px; padding: 12px; background: linear-gradient(135deg, #eab308, #ca8a04); color: #022c22; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; font-size: 15px; margin-top: 8px; box-shadow: 0 4px 10px rgba(234, 179, 8, 0.4); text-transform: uppercase; }
+    /* GRID WORD SEARCH DINAMIK (10x10) */
+    .grid-container { display: grid; grid-template-columns: repeat(10, 1fr); gap: 3px; width: 320px; height: 320px; background: #022c22; padding: 6px; border-radius: 12px; border: 3px solid #facc15; box-shadow: 0 10px 25px rgba(0,0,0,0.6); touch-action: none; user-select: none; }
+    .cell { background: #065f46; color: #ffffff; border-radius: 4px; display: flex; align-items: center; justify-content: center; font-size: 15px; font-weight: bold; cursor: pointer; border: 1px solid #047857; transition: 0.1s; }
+    .cell.selected { background: #facc15; color: #022c22; font-size: 17px; box-shadow: 0 0 8px #facc15; }
+    .cell.found { background: #10b981; color: #022c22; border-color: #facc15; font-weight: 900; }
+
+    /* BUTANG */
+    .btn-start { width: 320px; padding: 12px; background: linear-gradient(135deg, #eab308, #ca8a04); color: #022c22; border: none; border-radius: 8px; font-weight: 900; cursor: pointer; font-size: 15px; margin-top: 8px; box-shadow: 0 4px 12px rgba(234, 179, 8, 0.5); text-transform: uppercase; letter-spacing: 0.5px; }
     .btn-view-all { width: 320px; padding: 10px; background: #022c22; color: #facc15; border: 1px solid #facc15; border-radius: 8px; font-weight: bold; cursor: pointer; font-size: 13px; margin-top: 8px; }
 
     /* BORANG */
@@ -31,7 +43,7 @@
     input, select { width: 100%; padding: 8px; margin: 3px 0 6px 0; border-radius: 6px; border: 1px solid #047857; background: #064e3b; color: white; font-size: 12px; }
     button.btn-submit { width: 100%; padding: 10px; background: #10b981; color: #022c22; border: none; border-radius: 6px; font-weight: bold; cursor: pointer; font-size: 13px; margin-top: 5px; }
 
-    /* MODAL CARTA */
+    /* MODAL CARTA TOP 5 */
     .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(2, 44, 34, 0.9); backdrop-filter: blur(5px); z-index: 999; justify-content: center; align-items: center; padding: 15px; }
     .modal-content { background: #064e3b; border: 2px solid #facc15; border-radius: 16px; padding: 18px; width: 100%; max-width: 420px; display: flex; flex-direction: column; }
     .modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; border-bottom: 1px solid #047857; padding-bottom: 6px; }
@@ -54,25 +66,28 @@
 <body>
 
   <div class="header-container">
+    <div class="promo-badge">📻 ANJURAN BIRO AGAMA KESUKES</div>
     <img src="https://i.postimg.cc/QtPnsW43/svg.png" alt="Logo KESUKES" class="logo-kesukes">
-    <h1>🕌 Menara Masjid Islamik</h1>
-    <p class="sub"><b>Biro Agama KESUKES Cawangan Kemaman</b><br>Ketik skrin untuk membina menara tertinggi!</p>
+    <h1>🔍 CARI KATA ISLAMIK DINAMIK</h1>
+    <p class="sub"><b>KESUKES Cawangan Kemaman</b><br>Hospital Kemaman, PKD Kemaman & Pejabat Pergigian Kemaman</p>
+    <div class="date-banner" id="dateBanner">📅 Cabaran Ke-2 Berlangsung</div>
   </div>
 
   <div class="dashboard">
-    <div class="dash-box">Tinggi: <span id="blockCount">0</span> Blok</div>
-    <div class="dash-box">Skor: <span id="currentScore">0</span> pts</div>
+    <div class="dash-box">Masa: <span id="timer">0</span>s</div>
+    <div class="dash-box">Dijumpai: <span id="foundCount">0</span>/8</div>
   </div>
 
-  <canvas id="gameCanvas" width="320" height="320"></canvas>
+  <div class="word-list" id="wordList"></div>
+  <div class="grid-container" id="grid"></div>
 
-  <button class="btn-start" id="startBtn" onclick="mulaGame()">MULA BINA MENARA 🕌</button>
+  <button class="btn-start" id="startBtn" onclick="mulaGame()">MULA GAME ▶️</button>
   <button class="btn-view-all" onclick="openModal()">📜 Carta Top 5 Pemain</button>
 
   <!-- BORANG PENDAFTARAN ANGGOTA -->
   <div class="form-container" id="scoreForm" style="display: none;">
     <h3 style="text-align: center; color: #facc15;">ALHAMDULILLAH, TAHNIAH!</h3>
-    <p style="text-align: center; font-size: 13px; margin-bottom: 8px;">Markah Akhir: <b id="finalScore" style="font-size: 18px; color: #34d399;">0</b> pts</p>
+    <p style="text-align: center; font-size: 13px; margin-bottom: 8px;">Markah Skor: <b id="finalScore" style="font-size: 18px; color: #34d399;">0</b> pts</p>
     
     <label>Nama Penuh Anggota:</label>
     <input type="text" id="nama" placeholder="Ahmad Zaki Bin Ali" required>
@@ -136,110 +151,143 @@
   </div>
 
   <script>
-    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbza8R2pfYSbsVnqoY4F9hELkZ_WUfny5rjLTeP0m5zBP_WaGdA3sov0jGrG169IQOgJbA/exec";
+    // PASTE URL GOOGLE APPS SCRIPT ANDA DI SINI
+    const SCRIPT_URL = "https://script.google.com/a/macros/moh.gov.my/s/AKfycbzgpQyxEJbZjcZcEYfldC6EBHYAmpEQC-sdi5wqKZ2CBl8AYa1dJz1CWaZZWlKFPVfayg/exec";
 
-    const canvas = document.getElementById("gameCanvas");
-    const ctx = canvas.getContext("2d");
-
-    let blocks = [];
-    let currentBlock = null;
-    let blockSpeed = 2.5;
-    let direction = 1;
-    let gameLoop = null;
-    let gameActive = false;
-    let score = 0;
+    const TARGET_WORDS = ["TAWAKKAL", "SABAR", "IKHLAS", "SHIFA", "AMANAH", "SELAWAT", "REDHA", "ISTIQAMAH"];
+    
+    let boardGrid = [];
+    let foundWords = [];
+    let selectedCells = [];
+    let timer = 0;
+    let timerInterval = null;
+    let gameStarted = false;
+    let finalCalculatedScore = 0;
     let isPertandinganAktif = true;
 
-    function initGame() {
-      blocks = [{ x: 110, y: 290, width: 100, height: 25 }];
-      score = 0;
-      blockSpeed = 2.5;
-      document.getElementById("blockCount").innerText = "0";
-      document.getElementById("currentScore").innerText = "0";
-      createNewBlock();
-    }
+    // GENERATOR GRID DINAMIK & RAWAK
+    function generateRandomGrid() {
+      boardGrid = Array(10).fill(null).map(() => Array(10).fill(''));
 
-    function createNewBlock() {
-      const prevBlock = blocks[blocks.length - 1];
-      const newY = prevBlock.y - 25;
+      TARGET_WORDS.forEach(word => {
+        let placed = false;
+        let attempts = 0;
 
-      if (newY < 40) {
-        // Tatalkan semua blok ke bawah jika menara semakin tinggi
-        blocks.forEach(b => b.y += 25);
-      }
+        while (!placed && attempts < 100) {
+          attempts++;
+          let isHorizontal = Math.random() < 0.5;
+          let row = Math.floor(Math.random() * 10);
+          let col = Math.floor(Math.random() * 10);
 
-      currentBlock = {
-        x: 0,
-        y: blocks[blocks.length - 1].y - 25,
-        width: prevBlock.width,
-        height: 25
-      };
-    }
-
-    function update() {
-      if (!gameActive) return;
-
-      currentBlock.x += blockSpeed * direction;
-      if (currentBlock.x + currentBlock.width >= canvas.width || currentBlock.x <= 0) {
-        direction *= -1;
-      }
-
-      draw();
-      gameLoop = requestAnimationFrame(update);
-    }
-
-    function draw() {
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-      // Lukis Tapak Menara Masjid
-      ctx.fillStyle = "#047857";
-      blocks.forEach((b, i) => {
-        ctx.fillStyle = i === 0 ? "#ca8a04" : (i % 2 === 0 ? "#10b981" : "#34d399");
-        ctx.fillRect(b.x, b.y, b.width, b.height);
-        ctx.strokeStyle = "#facc15";
-        ctx.strokeRect(b.x, b.y, b.width, b.height);
+          if (isHorizontal) {
+            if (col + word.length <= 10) {
+              let canPlace = true;
+              for (let i = 0; i < word.length; i++) {
+                if (boardGrid[row][col + i] !== '' && boardGrid[row][col + i] !== word[i]) {
+                  canPlace = false;
+                  break;
+                }
+              }
+              if (canPlace) {
+                for (let i = 0; i < word.length; i++) {
+                  boardGrid[row][col + i] = word[i];
+                }
+                placed = true;
+              }
+            }
+          } else {
+            if (row + word.length <= 10) {
+              let canPlace = true;
+              for (let i = 0; i < word.length; i++) {
+                if (boardGrid[row + i][col] !== '' && boardGrid[row + i][col] !== word[i]) {
+                  canPlace = false;
+                  break;
+                }
+              }
+              if (canPlace) {
+                for (let i = 0; i < word.length; i++) {
+                  boardGrid[row + i][col] = word[i];
+                }
+                placed = true;
+              }
+            }
+          }
+        }
       });
 
-      // Lukis Blok Berayun Semasa
-      if (currentBlock) {
-        ctx.fillStyle = "#facc15";
-        ctx.fillRect(currentBlock.x, currentBlock.y, currentBlock.width, currentBlock.height);
-        ctx.strokeStyle = "#ffffff";
-        ctx.strokeRect(currentBlock.x, currentBlock.y, currentBlock.width, currentBlock.height);
+      const letters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+      for (let r = 0; r < 10; r++) {
+        for (let c = 0; c < 10; c++) {
+          if (boardGrid[r][c] === '') {
+            boardGrid[r][c] = letters.charAt(Math.floor(Math.random() * letters.length));
+          }
+        }
       }
     }
 
-    function dropBlock() {
-      if (!gameActive || !currentBlock) return;
+    function renderWordList() {
+      const container = document.getElementById("wordList");
+      container.innerHTML = "";
+      TARGET_WORDS.forEach(w => {
+        const span = document.createElement("span");
+        span.className = "word-item" + (foundWords.includes(w) ? " found" : "");
+        span.id = "word-" + w;
+        span.innerText = w;
+        container.appendChild(span);
+      });
+    }
 
-      const prevBlock = blocks[blocks.length - 1];
-      const diff = currentBlock.x - prevBlock.x;
-
-      if (Math.abs(diff) >= currentBlock.width) {
-        // Menara Jatuh / Game Over
-        endGame();
-        return;
+    function renderGrid() {
+      const grid = document.getElementById("grid");
+      grid.innerHTML = "";
+      for (let r = 0; r < 10; r++) {
+        for (let c = 0; c < 10; c++) {
+          const div = document.createElement("div");
+          div.className = "cell";
+          div.dataset.row = r;
+          div.dataset.col = c;
+          div.innerText = boardGrid[r][c];
+          div.addEventListener("click", () => handleCellClick(r, c, div));
+          grid.appendChild(div);
+        }
       }
+    }
 
-      // Potong bahagian blok yang terkeluar
-      if (diff > 0) {
-        currentBlock.width -= diff;
+    function handleCellClick(r, c, el) {
+      if (!gameStarted || !isPertandinganAktif) return;
+
+      if (el.classList.contains("selected")) {
+        el.classList.remove("selected");
+        selectedCells = selectedCells.filter(item => !(item.r === r && item.c === c));
       } else {
-        currentBlock.width += diff;
-        currentBlock.x = prevBlock.x;
+        el.classList.add("selected");
+        selectedCells.push({ r, c, char: boardGrid[r][c], el });
       }
 
-      blocks.push({ ...currentBlock });
-      score += 150 + (blocks.length * 20);
-      blockSpeed += 0.2; // Tambah kelajuan mengikut ketinggian
-
-      document.getElementById("blockCount").innerText = blocks.length - 1;
-      document.getElementById("currentScore").innerText = score;
-
-      createNewBlock();
+      checkWordMatch();
     }
 
-    canvas.addEventListener("click", dropBlock);
+    function checkWordMatch() {
+      let currentString = selectedCells.map(item => item.char).join("");
+      let reverseString = currentString.split("").reverse().join("");
+
+      TARGET_WORDS.forEach(word => {
+        if (!foundWords.includes(word) && (currentString === word || reverseString === word)) {
+          foundWords.push(word);
+          selectedCells.forEach(item => {
+            item.el.classList.remove("selected");
+            item.el.classList.add("found");
+          });
+          selectedCells = [];
+          document.getElementById("foundCount").innerText = foundWords.length;
+          renderWordList();
+
+          if (foundWords.length === TARGET_WORDS.length) {
+            endGame();
+          }
+        }
+      });
+    }
 
     function mulaGame() {
       if (!isPertandinganAktif) {
@@ -247,24 +295,36 @@
         return;
       }
 
-      document.getElementById("scoreForm").style.display = "none";
-      gameActive = true;
-      initGame();
+      foundWords = [];
+      selectedCells = [];
+      timer = 0;
+      gameStarted = true;
 
-      cancelAnimationFrame(gameLoop);
-      update();
+      document.getElementById("foundCount").innerText = "0";
+      document.getElementById("timer").innerText = "0";
+      document.getElementById("scoreForm").style.display = "none";
+
+      generateRandomGrid();
+      renderWordList();
+      renderGrid();
+
+      clearInterval(timerInterval);
+      timerInterval = setInterval(() => {
+        timer++;
+        document.getElementById("timer").innerText = timer;
+      }, 1000);
 
       document.getElementById("startBtn").disabled = true;
       document.getElementById("startBtn").style.opacity = "0.5";
     }
 
     function endGame() {
-      gameActive = false;
-      cancelAnimationFrame(gameLoop);
+      clearInterval(timerInterval);
+      gameStarted = false;
 
-      alert("🏛️ Menara Anda Telah Kukuh Dibina!");
+      finalCalculatedScore = Math.max(50, 1200 - (timer * 5));
 
-      document.getElementById("finalScore").innerText = score;
+      document.getElementById("finalScore").innerText = finalCalculatedScore;
       document.getElementById("scoreForm").style.display = "block";
       document.getElementById("startBtn").disabled = false;
       document.getElementById("startBtn").style.opacity = "1";
@@ -337,8 +397,8 @@
           fasiliti: fasiliti,
           unit: unit,
           jawatan: jawatan,
-          blocks: blocks.length - 1,
-          score: score
+          duration: timer,
+          score: finalCalculatedScore
         })
       })
       .then(() => {
@@ -372,7 +432,9 @@
       });
     }
 
-    draw();
+    generateRandomGrid();
+    renderWordList();
+    renderGrid();
     loadLeaderboard();
   </script>
 </body>
